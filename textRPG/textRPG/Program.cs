@@ -343,7 +343,7 @@ namespace textRPG
             Console.WriteLine("");
             Console.WriteLine("[보유 골드]");
             Console.WriteLine("");
-            PrintTextWithHighlights("", _player.Gold.ToString(), " G"); // 문자열 s2만 노란 색이기 때문에 앞에 "" 로 s1 추가해줬음, 관련 메서드 새로 만드는 것보단 편법 사용. 그래서 골드 값은 s2(노랑)으로 출력
+            PrintTextWithHighlights("", _player.Gold.ToString(), " G"); 
             Console.WriteLine("");
             Console.WriteLine("[아이템 목록]");
             Console.WriteLine("");
@@ -352,10 +352,6 @@ namespace textRPG
             {
                 _items[i].PrintItemStatDescription(false, i + 1, true); // 아이템 설명 출력 메서드를 사용합니다.
             }
-            // withNumber 파라미터를 false로 설정하여 상점에서만 아이템 번호 없이 출력
-            // true값 하나 더 추가, 상점에서 아이템을 출력할 때 showPrice(가격 보여주기)를 true로 설정하여 가격을 출력 (기본이 true여서 넣을 필요는 없었던듯)
-            // 인벤토리에선, 가격 표시를 사용 안하므로 2개의 매개변수만 가짐. (true, i + 1)
-
 
             Console.WriteLine("");
             Console.WriteLine("0. 나가기");
@@ -513,10 +509,7 @@ namespace textRPG
         }
 
         static void AddItem(Item item) // 3-5 아이템 추가 함수
-        {                               // ( ) 안에 Item item ? -> AddItem 메서드의 매개 변수 = 외부에서 Item 객체의 item 매개 변수를 받아 온 것.
-                                        // Item 객체의 속성과 메서드에 접근 할 수 있음(데이터 읽기, 수정, 필요 기능 수행)
-                                        // 타입 유연성, 재사용성, 안정성을 보장하고 잘못된 타입의 객체 전달 방지.
-
+        {                               
             if (Item.ItemCnt == 8) return; // Item클래스 객체의 ItemCnt 변수가 8이면 아무 것도 안 만든다.
             _items[Item.ItemCnt] = item;  // 0개 -> 0번 인덱스, 1개 -> 1번 인덱스
             Item.ItemCnt++;
@@ -631,7 +624,7 @@ namespace textRPG
                     DungeonMenu(); // 던전 메뉴
                     break;
                 case 1:
-                    ExecuteDungeon("죽음의 폐광", 5, 1000); // ExecuteDungeon의 매개변수 값 입력 ( 던전 이름, 요구 방어력, 보상 골드 ) 
+                    ExecuteDungeon("죽음의 폐광", 5, 1000);  
                     break;
                 case 2:
                     ExecuteDungeon("검은바위산", 11, 1700);
@@ -662,15 +655,12 @@ namespace textRPG
                     Console.WriteLine("던전을 클리어하지 못했습니다.. 체력이 반 감소합니다.");
                     _player.Hp = Math.Max(_player.Hp - hpLoss / 2, 0); // 실패시 체력이 절반으로 감소, 0보다는 낮아지지 않음.
                     _player.Hp = Math.Min(_player.Hp, 100);
-                    // Math.Max(a,b) -> a,b를 비교해서 더 큰 값을 반환, 
-                    // 체력이 0 이하로 떨어지지 않도록 하려고 사용. ( 0이 음수보다 더 크므로 0이 반환 )
                 }
                 else // 권장 방어력 이상이거나, 권장 방어력 이하이지만 던전 실패가 아닌 경우
                 {
                     Console.WriteLine("던전을 클리어했습니다! 축하 드립니다.");
 
                     bonusReward += (int)(reward * perBonusReward);
-                    // bonusReward 보너스 골드는  기본 골드 x 추가 공격력 비율 보상 곱해서 더 함
 
                     _player.Hp = Math.Max(_player.Hp - hpLoss, 0); // 플레이어 체력 - 손실 체력,  0보다는 낮아지지 않음.
                     _player.Hp = Math.Min(_player.Hp, 100);
@@ -685,12 +675,8 @@ namespace textRPG
                 bonusReward += (int)(reward * perBonusReward); // 위와 동일
 
                 _player.Hp = Math.Max(_player.Hp - (hpLoss > 0 ? hpLoss : 0), 0);
-                // 삼항 연산자, hpLoss가 0보다 크면 hpLoss를 쓰고, 아니면 0을 사용
-                // 즉 체력 손실이 0보다 크면 그 값을 체력에서 차감하고, 그렇지 않으면 차감 X
-                // Math.Max로, 체력 계산값이 0보다 크면 그 값을 _player.Hp로 반환 = 음수 방지
 
                 _player.Hp = Math.Min(_player.Hp, 100);
-                // 그런데, 이번엔 체력이 100을 초과하는 경우가 발생해서 Math.Min(더 작은 녀석 반환)를 만들어 줬음. 다른 조건문에도 만들어야 함.
 
                 _player.Gold += bonusReward; // 플레이어의 골드에 최종 보상 더하기
             }
